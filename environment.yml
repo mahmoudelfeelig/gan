@@ -1,0 +1,12 @@
+name: traffic-gan
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pytorch::pytorch=2.3
+  - pytorch::torchvision
+  - numpy
+  - pandas
+  - scikit-learn
+  - matplotlib
+  - jupyterlab
