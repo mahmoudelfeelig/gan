@@ -3,9 +3,10 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from pathlib import Path
+import joblib
 
-RAW = Path("data/train_raw.csv")
-PROCESSED = Path("data/train_processed.parquet")
+RAW = Path("Dataset.csv")
+PROCESSED = Path("train_processed.parquet")  # Save in root, no data/ folder
 
 def split_ip(df, col, prefix):
     octets = df[col].str.split('.', expand=True).astype(int)
@@ -31,11 +32,10 @@ def main():
 
     pipe = build_pipeline(df)
     X = pipe.fit_transform(df)
-    # Persist artefacts
-    pd.to_pickle(pipe, "preprocess.pkl")
-    import joblib; joblib.dump(pipe, "preprocess.joblib")
-    # Save as Parquet to keep dtype info
-    pd.DataFrame.sparse.from_spmatrix(X).to_parquet(PROCESSED)
+
+    joblib.dump(pipe, "preprocess.joblib")
+    pd.DataFrame(X.toarray()).to_parquet(PROCESSED)
+    print("✅ Preprocessing complete. Output saved to:", PROCESSED)
 
 if __name__ == "__main__":
     main()
